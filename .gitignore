@@ -1,2 +1,4 @@
-/data/
-/fasttext/
+/data/*
+/fasttextmodel/*
+/upload/*
+/.idea/

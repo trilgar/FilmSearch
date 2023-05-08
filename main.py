@@ -5,50 +5,41 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 import yaml
+import fasttext
 
 # Press the green button in the gutter to run the script.
+from database import FilmsDB
+from models import EmbeddingSearch
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s", force=True)
 
+returned_columns = ['_id', 'title', 'keywords']
 
-# model_path = "fasttext/cc.en.300.bin"
-# model = fasttext.load_model(model_path)
 
-# engine = EmbeddingSearch.from_texts(df["keywords"], model.get_sentence_vector)
-@st.cache_data
+@st.cache_resource
 def startup():
-    PATH = Path("data")
+    logging.debug('Started model preparation')
+    database = FilmsDB()
+    model_path = "fasttextmodel/cc.en.300.bin"
+    model = fasttext.load_model(model_path)
 
-    print('Started indexing')
-
-    df_keywords = pd.read_csv(PATH / "keywords.csv")
-    df_keywords["keywords"] = df_keywords["keywords"].apply(yaml.safe_load)
-
-    df_meta = pd.read_csv(PATH / "movies_metadata.csv")
-    df_meta = df_meta[df_meta["id"].str.isnumeric()]
-    df_meta["id"] = df_meta["id"].astype("int")
-
-    df = df_meta.merge(df_keywords, on="id", how="left")
-    df = df.dropna(subset="keywords").copy()
-    df["keywords"] = df["keywords"].apply(lambda x: " ".join(x["name"] for x in x))
-
-    print('Completed indexing')
-    return df
+    engine = EmbeddingSearch.from_database(database, model.get_sentence_vector)
+    logging.debug('Model preparation completed')
+    return database, engine
 
 
 def main():
+    database, search_engine = startup()
+
     # Define the search box widget
-    query = st.text_input("Enter a search term:")
-    df = startup()
+    query = st.text_input("Enter search request:")
+    num_results = st.number_input("Number of results to return:", value=10)
 
     if st.button("Search"):
         # Get the search results from your search engine
-        # results = engine.get_closest(query, MAX_RESULTS)
-        f = open('test.json')
-
-        results = json.load(f)
-
-        st.write(df.iloc[[x["id"] for x in results]])
+        results = search_engine.get_closest(query, num_results)
+        data = pd.DataFrame(list(database.get_by_ids([x["id"] for x in results.result])))
+        st.write(data[returned_columns])
 
 
 if __name__ == '__main__':

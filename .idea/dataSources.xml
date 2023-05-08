@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="MongoDB" uuid="4011c4b0-cc2b-46dc-9282-1389f2e9ac5a">
+      <driver-ref>mongo</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
+      <jdbc-url>mongodb://filmsearcher:Qgf3KWPTqlLW76Te7ghm2nZfknyVqSQLQtviuGjgD1l8nYQqcVfh0H9lHN7SWhNxeNtmaZoHmPxDACDb5RwYIQ==@filmsearcher.mongo.cosmos.azure.com:10255/?ssl=true&amp;retrywrites=false&amp;replicaSet=globaldb&amp;maxIdleTimeMS=120000&amp;appName=@filmsearcher@</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>
