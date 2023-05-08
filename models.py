@@ -38,7 +38,7 @@ class EmbeddingSearch:
         indexes = []
         step = total // 100
         for i, doc in enumerate(inputs):
-            index = doc['_id']
+            index = str(doc['_id'])
             text = doc['keywords']
             vec = embedder(text)
             result.append(vec)
